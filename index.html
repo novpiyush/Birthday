@@ -1,146 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Happy Birthday 💖</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Open Surprise ✨</title>
 
-  <style>
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-      font-family: 'Segoe UI', sans-serif;
-    }
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 
-    body{
-      height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background: linear-gradient(135deg,#ff9a9e,#fad0c4);
-      overflow:hidden;
-      text-align:center;
-      color:white;
-    }
+body{
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+background:linear-gradient(135deg,#ffd6e7,#e0c3fc,#c2e9fb);
+overflow:hidden;
+}
 
-    .card{
-      background: rgba(255,255,255,0.15);
-      padding:40px 30px;
-      border-radius:25px;
-      backdrop-filter: blur(10px);
-      box-shadow:0 10px 40px rgba(0,0,0,0.2);
-      animation: pop 1.2s ease;
-    }
+/* glass card */
+.card{
+backdrop-filter:blur(30px);
+background:rgba(255,255,255,0.28);
+border-radius:36px;
+padding:42px 30px;
+width:92%;
+max-width:520px;
+text-align:center;
+box-shadow:0 30px 90px rgba(0,0,0,0.2);
+animation:fadeIn 1.2s ease;
+}
 
-    @keyframes pop{
-      from{ transform: scale(0.5); opacity:0; }
-      to{ transform: scale(1); opacity:1; }
-    }
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(40px)}
+to{opacity:1;transform:translateY(0)}
+}
 
-    h1{
-      font-size:40px;
-      margin-bottom:10px;
-    }
+/* button */
+button{
+padding:15px 28px;
+border:none;
+border-radius:40px;
+background:linear-gradient(135deg,#ff6fa5,#ff2f6d);
+color:white;
+font-size:19px;
+cursor:pointer;
+transition:.35s;
+box-shadow:0 10px 30px rgba(255,47,109,.4);
+}
+button:hover{transform:scale(1.08)}
 
-    p{
-      font-size:20px;
-      margin-bottom:20px;
-    }
+/* countdown */
+.count{
+font-size:95px;
+display:none;
+color:#ff2f6d;
+text-shadow:0 0 20px #ff6fa5,0 0 40px #ff9ec7;
+animation:pulse 1s infinite;
+}
+@keyframes pulse{50%{transform:scale(1.18)}}
 
-    .heart{
-      font-size:40px;
-      animation: beat 1s infinite;
-    }
+/* title */
+.title{
+display:none;
+font-size:34px;
+margin-top:12px;
+color:#ff2f6d;
+text-shadow:0 0 18px rgba(255,47,109,.5);
+animation:fadeUp 1.6s forwards;
+}
+@keyframes fadeUp{
+from{opacity:0;transform:translateY(25px)}
+to{opacity:1;transform:translateY(0)}
+}
 
-    @keyframes beat{
-      0%,100%{ transform: scale(1); }
-      50%{ transform: scale(1.3); }
-    }
+/* cake */
+.scene{display:none;font-size:80px;margin-top:18px;animation:fadeUp 1.2s}
 
-    button{
-      padding:12px 25px;
-      border:none;
-      border-radius:30px;
-      font-size:18px;
-      cursor:pointer;
-      background:white;
-      color:#ff4d6d;
-      font-weight:bold;
-      transition:0.3s;
-    }
+/* letter */
+.letter{
+display:none;
+margin-top:22px;
+text-align:left;
+font-size:15px;
+line-height:1.8;
+white-space:pre-line;
+color:#333;
+max-height:60vh;
+overflow:auto;
+scroll-behavior:smooth;
+}
 
-    button:hover{
-      transform: scale(1.1);
-    }
-
-    .hidden{
-      display:none;
-      margin-top:20px;
-      font-size:22px;
-      animation: fade 1s ease;
-    }
-
-    @keyframes fade{
-      from{opacity:0; transform:translateY(20px);}
-      to{opacity:1; transform:translateY(0);}
-    }
-
-    .balloons{
-      position:absolute;
-      bottom:-150px;
-      width:100%;
-      display:flex;
-      justify-content:space-around;
-      pointer-events:none;
-    }
-
-    .balloons span{
-      width:40px;
-      height:60px;
-      background:red;
-      border-radius:50%;
-      position:relative;
-      animation: float 6s linear infinite;
-    }
-
-    .balloons span:nth-child(2){ background:yellow; animation-duration:7s;}
-    .balloons span:nth-child(3){ background:blue; animation-duration:5s;}
-    .balloons span:nth-child(4){ background:green; animation-duration:8s;}
-    .balloons span:nth-child(5){ background:pink; animation-duration:6.5s;}
-
-    @keyframes float{
-      from{ transform:translateY(0); }
-      to{ transform:translateY(-120vh); }
-    }
-  </style>
+/* confetti */
+.confetti{
+position:fixed;
+width:10px;height:10px;
+top:-10px;
+border-radius:3px;
+animation:fall linear forwards;
+}
+@keyframes fall{
+to{transform:translateY(110vh) rotate(720deg)}
+}
+</style>
 </head>
 
 <body>
 
 <div class="card">
-  <h1>Happy Birthday 🎂</h1>
-  <p>Dear Sister 💕</p>
 
-  <div class="heart">💖</div>
+<button id="openBtn">Open Surprise ✨</button>
 
-  <br>
-  <button onclick="showMessage()">Tap for Surprise 🎁</button>
+<div id="count" class="count">3</div>
 
-  <div id="msg" class="hidden">
-    You are the best sister in the world 🌍💗  
-    May your life be filled with happiness, love and success ✨  
-    Love you forever 💞
-  </div>
+<div id="title" class="title">Happiest Birthday Riya 🎂💖</div>
+
+<div id="cake" class="scene">🎂</div>
+
+<button id="blowBtn" style="display:none">Tap To Blow Candles 💨</button>
+<button id="cutBtn" style="display:none">Cut The Cake 🔪</button>
+
+<div id="letter" class="letter"></div>
+
 </div>
 
-<div class="balloons">
-  <span></span><span></span><span></span><span></span><span></span>
-</div>
+<!-- sounds -->
+<audio id="tick" src="https://cdn.pixabay.com/audio/2022/03/15/audio_401b9c6bdf.mp3"></audio>
+<audio id="blow" src="https://cdn.pixabay.com/audio/2021/08/04/audio_c0b3c0b3f7.mp3"></audio>
+<audio id="piano" src="https://cdn.pixabay.com/audio/2022/10/25/audio_946b6d8e1c.mp3" loop></audio>
 
 <script>
-function showMessage(){
-  document.getElementById("msg").classList.remove("hidden");
+const openBtn=document.getElementById("openBtn")
+const countEl=document.getElementById("count")
+const title=document.getElementById("title")
+const cake=document.getElementById("cake")
+const blowBtn=document.getElementById("blowBtn")
+const cutBtn=document.getElementById("cutBtn")
+const letter=document.getElementById("letter")
+
+const tick=document.getElementById("tick")
+const blow=document.getElementById("blow")
+const piano=document.getElementById("piano")
+
+const finalText=`Happiest Birthday My Sweetest Sister Riya 🎂🎉
+
+Aaj Ka Din Aapki Zindagi Ka
+Sabse Khoobsurat Aur Khushiyon Se Bhara Din Ho ✨
+
+Krishna Ji Aapki Har Prarthana Poori Karein
+Aur Aapki Zindagi Hamesha
+Pyaar Khushi Aur Success Se Chamakti Rahe 🌸💖
+
+Aap Hamesha
+Aise Hi Muskurati Raho
+Kyunki Aapki Smile Hi
+Meri Sabse Badi Khushi Hai 🥹✨
+
+Aapne Meri Zindagi Mein Har Mod Par
+Mera Saath Diya Hai
+Isliye Main Bhi Peeche Kaise Reh Sakta Hoon 🥹
+
+Main Aapse Thoda Door Hoon
+Isliye Aapko Koi Bada Gift Nahi De Sakta
+Lekin Sirf Aapke Liye Maine Ye
+Pyari Si Birthday Surprise Website
+7 Hours Coding Karke Banayi Hai 💝
+
+Umeed Hai Ye Chhota Sa Surprise
+Aapke Chehre Par Muskaan Le Aayega 😊
+
+Bas Aap Humesha Aise Hi
+Khush Rehna Aur Muskurate Rehna 💖✨
+
+Janmadin Ki Bahut Bahut Shubhkamnaye 🎂✨
+
+Aap Hi Meri Sabse Pyaari Behen Ho 🥹💖`
+
+function typeLetter(text,i=0){
+if(i<text.length){
+letter.textContent+=text.charAt(i)
+setTimeout(()=>typeLetter(text,i+1),28)
+}
+}
+
+function confettiBlast(){
+for(let i=0;i<120;i++){
+const c=document.createElement("div")
+c.className="confetti"
+c.style.left=Math.random()*100+"vw"
+c.style.background=`hsl(${Math.random()*360},100%,60%)`
+c.style.animationDuration=2+Math.random()*2+"s"
+document.body.appendChild(c)
+setTimeout(()=>c.remove(),4000)
+}
+}
+
+openBtn.onclick=()=>{
+openBtn.style.display="none"
+countEl.style.display="block"
+let n=3
+
+const inter=setInterval(()=>{
+tick.currentTime=0
+tick.play()
+countEl.textContent=n
+
+if(n===0){
+clearInterval(inter)
+countEl.style.display="none"
+title.style.display="block"
+
+setTimeout(()=>{
+cake.style.display="block"
+blowBtn.style.display="inline-block"
+},1600)
+}
+n--
+},1000)
+}
+
+blowBtn.onclick=()=>{
+blow.play()
+cake.textContent="🎂✨"
+blowBtn.style.display="none"
+cutBtn.style.display="inline-block"
+}
+
+cutBtn.onclick=()=>{
+cutBtn.style.display="none"
+cake.textContent="🍰"
+confettiBlast()
+letter.style.display="block"
+piano.play()
+typeLetter(finalText)
+letter.scrollTop=0
 }
 </script>
 
