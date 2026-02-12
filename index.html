@@ -13,20 +13,20 @@ height:100vh;
 display:flex;
 align-items:center;
 justify-content:center;
-background:linear-gradient(135deg,#ffd6e7,#e0c3fc,#c2e9fb);
+background:linear-gradient(135deg,#ffd6e7,#e9d5ff,#dbeafe);
 overflow:hidden;
 }
 
 /* glass card */
 .card{
-backdrop-filter:blur(30px);
-background:rgba(255,255,255,0.28);
-border-radius:36px;
-padding:42px 30px;
+backdrop-filter:blur(25px);
+background:rgba(255,255,255,0.35);
+border-radius:32px;
+padding:40px 28px;
 width:92%;
 max-width:520px;
 text-align:center;
-box-shadow:0 30px 90px rgba(0,0,0,0.2);
+box-shadow:0 30px 80px rgba(0,0,0,0.15);
 animation:fadeIn 1.2s ease;
 }
 
@@ -35,51 +35,96 @@ from{opacity:0;transform:translateY(40px)}
 to{opacity:1;transform:translateY(0)}
 }
 
-/* button */
 button{
 padding:15px 28px;
 border:none;
 border-radius:40px;
-background:linear-gradient(135deg,#ff6fa5,#ff2f6d);
+background:linear-gradient(135deg,#ff7ab6,#ff4d88);
 color:white;
-font-size:19px;
+font-size:18px;
 cursor:pointer;
-transition:.35s;
-box-shadow:0 10px 30px rgba(255,47,109,.4);
+transition:.3s;
+box-shadow:0 10px 25px rgba(255,77,136,.35);
 }
-button:hover{transform:scale(1.08)}
+button:hover{transform:scale(1.06)}
 
-/* countdown */
 .count{
-font-size:95px;
+font-size:92px;
 display:none;
-color:#ff2f6d;
-text-shadow:0 0 20px #ff6fa5,0 0 40px #ff9ec7;
+color:#ff4d88;
+text-shadow:0 0 25px #ff9ec7;
 animation:pulse 1s infinite;
 }
-@keyframes pulse{50%{transform:scale(1.18)}}
+@keyframes pulse{50%{transform:scale(1.15)}}
 
-/* title */
 .title{
 display:none;
-font-size:34px;
+font-size:32px;
 margin-top:12px;
-color:#ff2f6d;
-text-shadow:0 0 18px rgba(255,47,109,.5);
-animation:fadeUp 1.6s forwards;
+color:#ff4d88;
+animation:fadeUp 1.4s forwards;
 }
 @keyframes fadeUp{
-from{opacity:0;transform:translateY(25px)}
-to{opacity:1;transform:translateY(0)}
+from{opacity:0;transform:translateY(20px)}
+to{opacity:1}
 }
 
-/* cake */
-.scene{display:none;font-size:80px;margin-top:18px;animation:fadeUp 1.2s}
+/* realistic cake */
+.cake-scene{
+display:none;
+margin-top:18px;
+animation:fadeUp 1.2s;
+}
+
+.cake{
+width:180px;
+height:140px;
+margin:auto;
+border-radius:18px 18px 40px 40px;
+background:linear-gradient(#ffb6d9,#ff7ab6);
+box-shadow:
+0 18px 30px rgba(0,0,0,0.15),
+inset 0 -8px 0 rgba(255,255,255,0.35);
+position:relative;
+}
+
+/* cream top */
+.cake:before{
+content:"";
+position:absolute;
+top:-22px;left:0;right:0;
+height:38px;
+border-radius:20px;
+background:linear-gradient(#fff,#ffd6ec);
+}
+
+/* candles */
+.candle{
+width:6px;height:26px;
+background:#fff;
+position:absolute;
+top:-40px;
+border-radius:2px;
+}
+
+.flame{
+width:10px;height:10px;
+background:radial-gradient(circle,#fff,#ffb347);
+border-radius:50%;
+position:absolute;
+top:-12px;left:-2px;
+animation:flicker .15s infinite alternate;
+}
+
+@keyframes flicker{
+from{transform:scale(1)}
+to{transform:scale(1.2)}
+}
 
 /* letter */
 .letter{
 display:none;
-margin-top:22px;
+margin-top:20px;
 text-align:left;
 font-size:15px;
 line-height:1.8;
@@ -87,7 +132,6 @@ white-space:pre-line;
 color:#333;
 max-height:60vh;
 overflow:auto;
-scroll-behavior:smooth;
 }
 
 /* confetti */
@@ -114,16 +158,20 @@ to{transform:translateY(110vh) rotate(720deg)}
 
 <div id="title" class="title">Happiest Birthday Riya 🎂💖</div>
 
-<div id="cake" class="scene">🎂</div>
+<div id="cakeScene" class="cake-scene">
+  <div class="cake">
+    <div class="candle" style="left:40px"><div class="flame"></div></div>
+    <div class="candle" style="left:85px"><div class="flame"></div></div>
+    <div class="candle" style="left:130px"><div class="flame"></div></div>
+  </div>
+</div>
 
-<button id="blowBtn" style="display:none">Tap To Blow Candles 💨</button>
-<button id="cutBtn" style="display:none">Cut The Cake 🔪</button>
+<button id="blowBtn" style="display:none">Blow Candles 💨</button>
 
 <div id="letter" class="letter"></div>
 
 </div>
 
-<!-- sounds -->
 <audio id="tick" src="https://cdn.pixabay.com/audio/2022/03/15/audio_401b9c6bdf.mp3"></audio>
 <audio id="blow" src="https://cdn.pixabay.com/audio/2021/08/04/audio_c0b3c0b3f7.mp3"></audio>
 <audio id="piano" src="https://cdn.pixabay.com/audio/2022/10/25/audio_946b6d8e1c.mp3" loop></audio>
@@ -132,59 +180,32 @@ to{transform:translateY(110vh) rotate(720deg)}
 const openBtn=document.getElementById("openBtn")
 const countEl=document.getElementById("count")
 const title=document.getElementById("title")
-const cake=document.getElementById("cake")
+const cakeScene=document.getElementById("cakeScene")
 const blowBtn=document.getElementById("blowBtn")
-const cutBtn=document.getElementById("cutBtn")
 const letter=document.getElementById("letter")
 
 const tick=document.getElementById("tick")
 const blow=document.getElementById("blow")
 const piano=document.getElementById("piano")
 
-const finalText=`Happiest Birthday My Sweetest Sister Riya 🎂🎉
+const text=`Happiest Birthday My Sweetest Sister Riya 🎂🎉
 
-Aaj Ka Din Aapki Zindagi Ka
-Sabse Khoobsurat Aur Khushiyon Se Bhara Din Ho ✨
+Aap Hamesha Aise Hi Khush Rehna
+Aur Muskurate Rehna 💖
 
-Krishna Ji Aapki Har Prarthana Poori Karein
-Aur Aapki Zindagi Hamesha
-Pyaar Khushi Aur Success Se Chamakti Rahe 🌸💖
+Ye Chhota Sa Surprise
+Sirf Aapke Liye Banaya Hai…`
 
-Aap Hamesha
-Aise Hi Muskurati Raho
-Kyunki Aapki Smile Hi
-Meri Sabse Badi Khushi Hai 🥹✨
-
-Aapne Meri Zindagi Mein Har Mod Par
-Mera Saath Diya Hai
-Isliye Main Bhi Peeche Kaise Reh Sakta Hoon 🥹
-
-Main Aapse Thoda Door Hoon
-Isliye Aapko Koi Bada Gift Nahi De Sakta
-Lekin Sirf Aapke Liye Maine Ye
-Pyari Si Birthday Surprise Website
-7 Hours Coding Karke Banayi Hai 💝
-
-Umeed Hai Ye Chhota Sa Surprise
-Aapke Chehre Par Muskaan Le Aayega 😊
-
-Bas Aap Humesha Aise Hi
-Khush Rehna Aur Muskurate Rehna 💖✨
-
-Janmadin Ki Bahut Bahut Shubhkamnaye 🎂✨
-
-Aap Hi Meri Sabse Pyaari Behen Ho 🥹💖`
-
-function typeLetter(text,i=0){
+function typeLetter(i=0){
 if(i<text.length){
-letter.textContent+=text.charAt(i)
-setTimeout(()=>typeLetter(text,i+1),28)
+letter.textContent+=text[i]
+setTimeout(()=>typeLetter(i+1),28)
 }
 }
 
-function confettiBlast(){
-for(let i=0;i<120;i++){
-const c=document.createElement("div")
+function confetti(){
+for(let i=0;i<80;i++){
+let c=document.createElement("div")
 c.className="confetti"
 c.style.left=Math.random()*100+"vw"
 c.style.background=`hsl(${Math.random()*360},100%,60%)`
@@ -199,7 +220,7 @@ openBtn.style.display="none"
 countEl.style.display="block"
 let n=3
 
-const inter=setInterval(()=>{
+let inter=setInterval(()=>{
 tick.currentTime=0
 tick.play()
 countEl.textContent=n
@@ -210,9 +231,9 @@ countEl.style.display="none"
 title.style.display="block"
 
 setTimeout(()=>{
-cake.style.display="block"
+cakeScene.style.display="block"
 blowBtn.style.display="inline-block"
-},1600)
+},1400)
 }
 n--
 },1000)
@@ -220,19 +241,12 @@ n--
 
 blowBtn.onclick=()=>{
 blow.play()
-cake.textContent="🎂✨"
 blowBtn.style.display="none"
-cutBtn.style.display="inline-block"
-}
-
-cutBtn.onclick=()=>{
-cutBtn.style.display="none"
-cake.textContent="🍰"
-confettiBlast()
+document.querySelectorAll(".flame").forEach(f=>f.remove())
+confetti()
 letter.style.display="block"
 piano.play()
-typeLetter(finalText)
-letter.scrollTop=0
+typeLetter()
 }
 </script>
 
