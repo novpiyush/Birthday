@@ -2,76 +2,179 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <title>A Small Game for Anvi</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>This is for Anvi</title>
 
   <style>
     body {
       margin: 0;
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      background: linear-gradient(135deg, #f5f7fa, #e4ebf5);
+      background: linear-gradient(135deg, #fdf2f8, #eef2ff);
       font-family: system-ui, sans-serif;
     }
 
-    .card {
+    .box {
       background: white;
-      padding: 40px 30px;
-      border-radius: 20px;
-      max-width: 320px;
+      padding: 30px;
+      border-radius: 22px;
+      width: 92%;
+      max-width: 440px;
       text-align: center;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.12);
     }
 
     h1 {
-      font-size: 26px;
-      margin-bottom: 12px;
+      font-size: 24px;
+      margin-bottom: 8px;
     }
 
     p {
       color: #555;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
-    summary {
-      list-style: none;
-      cursor: pointer;
-      padding: 14px 26px;
-      background: #4a67ff;
+    button {
+      width: 100%;
+      padding: 14px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 14px;
+      background: #6366f1;
       color: white;
-      border-radius: 30px;
-      font-size: 16px;
-      display: inline-block;
+      font-size: 15px;
+      cursor: pointer;
     }
 
-    summary::-webkit-details-marker {
-      display: none;
-    }
-
-    .message {
-      margin-top: 20px;
-      font-size: 18px;
-      color: #222;
+    button:hover {
+      background: #4f46e5;
     }
   </style>
 </head>
 <body>
 
-  <div class="card">
-    <h1>This is for Anvi.</h1>
-    <p>Just something small.</p>
+<div class="box" id="game">
+  <h1 id="question"></h1>
+  <p id="count"></p>
+  <div id="options"></div>
+</div>
 
-    <details>
-      <summary>Tap once</summary>
-      <div class="message">
-        Not random.<br>
-        Just intentional.<br>
-        Like you ❤️
-      </div>
-    </details>
-  </div>
+<script>
+const questions = [
+  {
+    q: "What is my favourite colour?",
+    options: ["Black", "White", "Grey", "Navy Blue"],
+    answer: 0
+  },
+  {
+    q: "Which song do I like the most?",
+    options: ["Samjhawan", "Tum Hi Ho", "Apna Bana Le", "Perfect"],
+    answer: 0
+  },
+  {
+    q: "Who is my favourite God?",
+    options: ["Krishna", "Shiva", "Ram", "Hanuman"],
+    answer: 0
+  },
+  {
+    q: "What is my dream career?",
+    options: [
+      "Cinematographer",
+      "Photographer",
+      "Editor",
+      "All of these"
+    ],
+    answer: 3
+  },
+  {
+    q: "What name did I give you?",
+    options: ["Anvi", "Anvika", "Anvisha", "Ananya"],
+    answer: 0
+  },
+  {
+    q: "Which parrot do I have?",
+    options: [
+      "Plum Headed",
+      "Alexandrine",
+      "Ringneck",
+      "Love Bird"
+    ],
+    answer: 0
+  },
+  {
+    q: "What is my height?",
+    options: ["5'6", "5'7", "5'8", "5'9"],
+    answer: 2
+  },
+  {
+    q: "What time do I usually sleep?",
+    options: ["1 AM", "2 AM", "3 AM", "4 AM"],
+    answer: 2
+  },
+  {
+    q: "Who do I talk to the most?",
+    options: ["Anvisha", "Friends", "Everyone", "No one"],
+    answer: 0
+  },
+  {
+    q: "Which game did we play together?",
+    options: [
+      "Name writing game",
+      "Truth or Dare",
+      "Ludo",
+      "Antakshari"
+    ],
+    answer: 0
+  },
+  {
+    q: "What is my favourite flower?",
+    options: ["Rose", "Lily", "Tulip", "Sunflower"],
+    answer: 0
+  }
+];
+
+let current = 0;
+let score = 0;
+
+function loadQuestion() {
+  document.getElementById("question").innerText = questions[current].q;
+  document.getElementById("count").innerText =
+    `Question ${current + 1} of ${questions.length}`;
+
+  const optDiv = document.getElementById("options");
+  optDiv.innerHTML = "";
+
+  questions[current].options.forEach((opt, i) => {
+    const btn = document.createElement("button");
+    btn.innerText = opt;
+    btn.onclick = () => {
+      if (i === questions[current].answer) score++;
+      current++;
+      current < questions.length ? loadQuestion() : showResult();
+    };
+    optDiv.appendChild(btn);
+  });
+}
+
+function showResult() {
+  const box = document.getElementById("game");
+  const win = score >= 7;
+
+  box.innerHTML = `
+    <h1>${win ? "You win" : "Nice try"}</h1>
+    <p>You scored ${score} out of ${questions.length}</p>
+    <p style="margin-top:15px;">
+      This game wasn’t about perfection.<br>
+      It was just something small,<br>
+      made thoughtfully.
+    </p>
+  `;
+}
+
+loadQuestion();
+</script>
 
 </body>
 </html>
