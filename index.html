@@ -6,12 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Arial, Helvetica, sans-serif;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
 
 body{
   background:#0d0d0d;
@@ -30,36 +25,23 @@ body{
   padding:26px;
   text-align:center;
   box-shadow:0 0 40px rgba(255,255,255,0.06);
-  position:relative;
 }
 
-/* TEXT — NEVER MOVES */
-h1{
-  letter-spacing:2px;
-  margin-bottom:14px;
-}
+h1{letter-spacing:2px;margin-bottom:14px}
+p{color:#bdbdbd;font-size:14px;margin-bottom:22px;line-height:1.4}
 
-p{
-  color:#bdbdbd;
-  font-size:14px;
-  margin-bottom:22px;
-  line-height:1.4;
-}
-
-/* BUTTON SAFE AREA */
 .button-zone{
   position:relative;
   width:100%;
   height:180px;
 }
 
-/* YES — FIXED FOREVER */
 #yesBtn{
   width:100%;
   padding:14px;
   border-radius:40px;
   border:none;
-  background:#ffffff;
+  background:#fff;
   color:#000;
   font-weight:700;
   font-size:15px;
@@ -68,7 +50,6 @@ p{
   left:0;
 }
 
-/* NO — MOVES ONLY INSIDE SAFE AREA */
 #noBtn{
   width:120px;
   padding:12px;
@@ -77,12 +58,11 @@ p{
   background:#1e1e1e;
   color:#fff;
   position:absolute;
-  top:95px;               /* ALWAYS BELOW TEXT + YES */
+  top:95px;
   left:50%;
   transform:translateX(-50%);
 }
 
-/* GAME */
 .hidden{display:none}
 
 .option{
@@ -96,12 +76,9 @@ p{
   cursor:pointer;
 }
 
-.option:hover{
-  background:#ffffff;
-  color:#000;
-}
+.option:hover{background:#fff;color:#000}
 
-/* SPARKLES */
+/* Sparkles */
 .sparkle{
   position:fixed;
   width:4px;
@@ -110,7 +87,6 @@ p{
   opacity:0;
   animation:spark 4s linear forwards;
 }
-
 @keyframes spark{
   0%{transform:translateY(0) scale(1);opacity:1}
   100%{transform:translateY(-320px) scale(0);opacity:0}
@@ -122,7 +98,7 @@ p{
 
 <div class="container" id="start">
   <h1>HEY PALAK</h1>
-  <p>
+  <p id="startMsg">
     I made a small game.<br>
     If you want to play, will you play it?
   </p>
@@ -134,19 +110,12 @@ p{
 </div>
 
 <div class="container hidden" id="intro">
-  <p>
-    If you win the game,<br>
-    you can give me any dare.
-  </p>
+  <p>If you win the game,<br>you can give me any dare.</p>
   <button class="option" onclick="showRules()">OK</button>
 </div>
 
 <div class="container hidden" id="rules">
-  <p>
-    You need to win at least<br>
-    7 out of 11 questions.<br>
-    So play carefully.
-  </p>
+  <p>You need to win at least<br>7 out of 11 questions.<br>So play carefully.</p>
   <button class="option" onclick="startGame()">NOW START THE GAME</button>
 </div>
 
@@ -158,14 +127,29 @@ p{
 <div class="container hidden" id="result"></div>
 
 <script>
-/* NO BUTTON MOVEMENT — SAFE */
+/* NO BUTTON LOGIC + THINKING LINES */
 const noBtn = document.getElementById("noBtn");
 const zone = document.querySelector(".button-zone");
+const msg = document.getElementById("startMsg");
+
+let noClicks = 0;
+
+const noMessages = [
+  "Take a moment. You can think again.",
+  "It is just a small game.",
+  "Maybe you should give it a try.",
+  "I am still waiting for your yes."
+];
 
 noBtn.addEventListener("click", () => {
+  noClicks++;
+
+  if(noClicks <= noMessages.length){
+    msg.innerText = noMessages[noClicks - 1];
+  }
+
   const minX = 20;
   const maxX = zone.clientWidth - 140;
-
   const minY = 90;
   const maxY = 145;
 
@@ -177,9 +161,9 @@ noBtn.addEventListener("click", () => {
 });
 
 /* YES FLOW */
-document.getElementById("yesBtn").onclick = () => {
-  document.getElementById("start").classList.add("hidden");
-  document.getElementById("intro").classList.remove("hidden");
+yesBtn.onclick = () => {
+  start.classList.add("hidden");
+  intro.classList.remove("hidden");
 };
 
 function showRules(){
@@ -187,91 +171,67 @@ function showRules(){
   rules.classList.remove("hidden");
 }
 
-/* GAME LOGIC */
-let index = 0;
-let score = 0;
-
-const questions = [
-  {q:"How did we meet for the first time?", o:["You shared a post on Instagram","Through a friend","Random chat","Comment section"], a:"You shared a post on Instagram"},
-  {q:"What nickname did I give you?", o:["Palku","Priya","Pihu","Pratibha"], a:"Palku"},
-  {q:"When is my birthday?", o:["15 Nov","16 Nov","17 Nov","18 Nov"], a:"17 Nov"},
-  {q:"My favourite colour is?", o:["Black and White","Blue","Red","Grey"], a:"Black and White"},
-  {q:"Favourite flower?", o:["Rose and Lotus","Rose","Lily","Sunflower"], a:"Rose and Lotus"},
-  {q:"What nickname did you give me?", o:["Piku","Prince","Piyu","Prem"], a:"Piku"},
-  {q:"Did I ever wish bad for you?", o:["No","Yes","Maybe","Sometimes"], a:"No"},
-  {q:"When we met, how old were you?", o:["15","16","17","18"], a:"17"},
-  {q:"Did I ever use Snapchat for you?", o:["Yes","No","Sometimes","Never"], a:"Yes"},
-  {q:"What is my dream?", o:["Cinematographer","Photographer","Editor","All of these"], a:"All of these"},
-  {q:"After you left, did I miss you?", o:["Yes","No","Maybe","Not sure"], a:"Yes"}
+/* GAME */
+let index=0, score=0;
+const questions=[
+ {q:"How did we meet for the first time?",o:["You shared a post on Instagram","Through a friend","Random chat","Comment section"],a:"You shared a post on Instagram"},
+ {q:"What nickname did I give you?",o:["Palku","Priya","Pihu","Pratibha"],a:"Palku"},
+ {q:"When is my birthday?",o:["15 Nov","16 Nov","17 Nov","18 Nov"],a:"17 Nov"},
+ {q:"My favourite colour is?",o:["Black and White","Blue","Red","Grey"],a:"Black and White"},
+ {q:"Favourite flower?",o:["Rose and Lotus","Rose","Lily","Sunflower"],a:"Rose and Lotus"},
+ {q:"What nickname did you give me?",o:["Piku","Prince","Piyu","Prem"],a:"Piku"},
+ {q:"Did I ever wish bad for you?",o:["No","Yes","Maybe","Sometimes"],a:"No"},
+ {q:"When we met, how old were you?",o:["15","16","17","18"],a:"17"},
+ {q:"Did I ever use Snapchat for you?",o:["Yes","No","Sometimes","Maybe"],a:"Yes"},
+ {q:"What is my dream?",o:["Cinematographer","Photographer","Editor","All of these"],a:"All of these"},
+ {q:"After you left, did I miss you?",o:["Yes","No","Maybe","Not sure"],a:"Yes"}
 ];
 
 function startGame(){
   rules.classList.add("hidden");
   game.classList.remove("hidden");
-  loadQuestion();
+  loadQ();
 }
 
-function loadQuestion(){
-  if(index >= questions.length){
-    endGame();
-    return;
-  }
-  document.getElementById("question").innerText = questions[index].q;
-  const optDiv = document.getElementById("options");
-  optDiv.innerHTML = "";
-
+function loadQ(){
+  if(index>=questions.length){endGame();return;}
+  question.innerText=questions[index].q;
+  options.innerHTML="";
   questions[index].o.sort(()=>Math.random()-0.5).forEach(op=>{
-    const b = document.createElement("button");
-    b.className = "option";
-    b.innerText = op;
-    b.onclick = ()=>checkAnswer(op);
-    optDiv.appendChild(b);
+    const b=document.createElement("button");
+    b.className="option";
+    b.innerText=op;
+    b.onclick=()=>{ if(op===questions[index].a)score++; index++; loadQ(); };
+    options.appendChild(b);
   });
-}
-
-function checkAnswer(ans){
-  if(ans === questions[index].a) score++;
-  index++;
-  loadQuestion();
 }
 
 function endGame(){
   game.classList.add("hidden");
-  const res = document.getElementById("result");
-  res.classList.remove("hidden");
-
-  if(score >= 7){
-    res.innerHTML = `
-      <h1>YOU WON THE GAME</h1>
-      <p>You won by scoring ${score} out of ${questions.length}</p>
-      <p>
-        You have won the game.<br>
-        Now you can give me any dare<br>
-        and I will complete it.
-      </p>
-      <button class="option" onclick="location.reload()">RESTART GAME</button>
-    `;
+  result.classList.remove("hidden");
+  if(score>=7){
+    result.innerHTML=`<h1>YOU WON THE GAME</h1>
+    <p>You won by scoring ${score} out of ${questions.length}</p>
+    <p>You have won the game.<br>Now you can give me any dare<br>and I will complete it.</p>
+    <button class="option" onclick="location.reload()">RESTART GAME</button>`;
     sparkles();
   }else{
-    res.innerHTML = `
-      <h1>GAME OVER</h1>
-      <p>You scored ${score} out of ${questions.length}</p>
-      <button class="option" onclick="location.reload()">RESTART GAME</button>
-    `;
+    result.innerHTML=`<h1>GAME OVER</h1>
+    <p>You scored ${score} out of ${questions.length}</p>
+    <button class="option" onclick="location.reload()">RESTART GAME</button>`;
   }
 }
 
-/* SPARKLES */
 function sparkles(){
-  let c = 0;
-  let i = setInterval(()=>{
-    const s = document.createElement("div");
-    s.className = "sparkle";
-    s.style.left = Math.random()*100 + "vw";
-    s.style.bottom = "0px";
+  let c=0;
+  let i=setInterval(()=>{
+    const s=document.createElement("div");
+    s.className="sparkle";
+    s.style.left=Math.random()*100+"vw";
+    s.style.bottom="0";
     document.body.appendChild(s);
     setTimeout(()=>s.remove(),4000);
-    if(++c > 150) clearInterval(i);
+    if(++c>150)clearInterval(i);
   },70);
 }
 </script>
