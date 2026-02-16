@@ -6,96 +6,78 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    }
-
     body {
+      margin: 0;
       height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
       background: linear-gradient(135deg, #f5f7fa, #e4ebf5);
+      font-family: system-ui, sans-serif;
     }
 
     .card {
       background: white;
-      padding: 40px 36px;
-      border-radius: 18px;
+      padding: 40px 30px;
+      border-radius: 20px;
       text-align: center;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
-      animation: fadeUp 1.2s ease;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.12);
       max-width: 320px;
     }
 
     h1 {
       font-size: 26px;
-      font-weight: 600;
       margin-bottom: 10px;
     }
 
     p {
-      font-size: 14px;
       color: #555;
-      margin-bottom: 22px;
+      margin-bottom: 25px;
     }
 
     button {
-      padding: 10px 22px;
-      border: none;
-      border-radius: 20px;
-      background: #4f6df5;
+      background: #4a67ff;
       color: white;
-      font-size: 14px;
+      border: none;
+      padding: 14px 26px;
+      border-radius: 30px;
+      font-size: 16px;
       cursor: pointer;
-      transition: 0.3s;
     }
 
-    button:hover {
-      background: #3c56d4;
-      transform: scale(1.05);
-    }
-
-    .hidden-text {
-      margin-top: 18px;
-      font-size: 13px;
-      color: #444;
+    #message {
+      margin-top: 25px;
       display: none;
-    }
-
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(15px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      font-size: 18px;
+      color: #222;
     }
   </style>
 </head>
-<body>
 
+<body>
   <div class="card">
     <h1>This is for Anvi.</h1>
     <p>Just something small.</p>
 
-    <button onclick="showText()">Tap once</button>
+    <button id="tapBtn">Tap once</button>
 
-    <div class="hidden-text" id="msg">
-      Built with intention, not randomness.
+    <div id="message">
+      Not everything is said out loud.<br>
+      Some things are felt.
     </div>
   </div>
 
   <script>
-    function showText() {
-      document.getElementById("msg").style.display = "block";
-    }
-  </script>
+    const btn = document.getElementById("tapBtn");
+    const msg = document.getElementById("message");
 
+    function reveal() {
+      msg.style.display = "block";
+      btn.style.display = "none";
+    }
+
+    btn.addEventListener("click", reveal);
+    btn.addEventListener("touchstart", reveal);
+  </script>
 </body>
 </html>
