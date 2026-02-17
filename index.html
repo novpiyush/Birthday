@@ -6,172 +6,97 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif;
-  -webkit-tap-highlight-color: transparent;
-}
-
-html,body{
-  width:100%;
-  height:100%;
-  overflow:hidden;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden}
 
 body{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background:
-    linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
-    url("bg.png") center center / cover no-repeat;
-  color:#fff;
+ display:flex;justify-content:center;align-items:center;
+ background:linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),url("bg.png") center/cover no-repeat fixed;
+ color:#fff;
 }
 
-/* ---------- GLASS UI (LOCKED) ---------- */
+/* GLASS */
 .container{
-  width:90%;
-  max-width:420px;
-  padding:26px;
-  border-radius:22px;
-  background:rgba(255,182,193,0.18);
-  backdrop-filter: blur(14px);
-  border:1px solid rgba(255,255,255,0.25);
-  box-shadow:0 20px 40px rgba(0,0,0,0.35);
-  text-align:center;
-  position:relative;
+ width:90%;max-width:420px;padding:26px;border-radius:22px;
+ background:rgba(255,182,193,.18);
+ backdrop-filter:blur(14px);
+ border:1px solid rgba(255,255,255,.25);
+ box-shadow:0 20px 40px rgba(0,0,0,.35);
+ text-align:center;
 }
 
 .hidden{display:none}
 
-/* ---------- LONG SLIDE UP ---------- */
-.animate{
-  animation:slideUp 1.2s cubic-bezier(.22,.61,.36,1) forwards;
-}
-
+/* SLIDE UP */
+.animate{animation:slideUp 1s cubic-bezier(.22,.61,.36,1) forwards}
 @keyframes slideUp{
-  from{opacity:0;transform:translateY(120px)}
-  to{opacity:1;transform:translateY(0)}
+ from{opacity:0;transform:translateY(90px)}
+ to{opacity:1;transform:translateY(0)}
 }
 
-p{font-size:14px;line-height:1.5;margin-bottom:18px}
+/* WIN / LOSE */
+.win{animation:winAnim 2.6s ease forwards}
+@keyframes winAnim{
+ 0%{opacity:0;transform:translateY(120px) scale(.9)}
+ 60%{opacity:1;transform:translateY(-10px) scale(1.04)}
+ 100%{transform:translateY(0) scale(1)}
+}
 
-/* ---------- BUTTONS ---------- */
+.lose{animation:loseAnim 2.2s ease forwards}
+@keyframes loseAnim{
+ 0%{opacity:0;transform:translateY(120px)}
+ 60%{opacity:1;transform:translateY(0)}
+ 80%{transform:translateX(-6px)}
+ 100%{transform:translateX(0)}
+}
+
+/* PARTICLES */
+.particle{
+ position:fixed;
+ width:14px;height:14px;
+ background:radial-gradient(circle,#ff9db5,#ff4f7b);
+ border-radius:50%;
+ bottom:-20px;
+ animation:floatUp 5s linear infinite;
+ opacity:.75;
+}
+
+@keyframes floatUp{
+ from{transform:translateY(0) scale(.6)}
+ to{transform:translateY(-120vh) scale(1.2);opacity:0}
+}
+
+/* UI */
+p{font-size:14px;line-height:1.45;margin-bottom:20px}
+
 .option,.navBtn{
-  width:100%;
-  padding:13px;
-  margin-top:10px;
-  border-radius:30px;
-  border:1px solid rgba(255,255,255,.35);
-  background:rgba(255,255,255,.15);
-  color:#fff;
-  cursor:pointer;
-  font-weight:600;
+ width:100%;padding:13px;margin-top:10px;
+ border-radius:30px;
+ border:1px solid rgba(255,255,255,.35);
+ background:rgba(255,255,255,.15);
+ color:#fff;font-weight:600;
 }
 
-.option.active,
-.navBtn:active{
-  background:#fff;
-  color:#000;
-}
-
-#yesBtn,#noBtn{
-  padding:16px;
-  border-radius:40px;
-  font-weight:700;
+.option.active,.navBtn:active{
+ background:#fff;color:#000;
 }
 
 #yesBtn{
-  background:#fff;
-  color:#000;
-  border:none;
+ padding:16px;border-radius:40px;
+ border:none;background:#fff;color:#000;font-weight:700;
 }
 
 #noBtn{
-  background:rgba(255,255,255,.15);
-  border:1px solid rgba(255,255,255,.35);
-  color:#fff;
-  position:absolute;
-  bottom:15px;
-  left:50%;
-  transform:translateX(-50%);
+ padding:16px;border-radius:40px;
+ border:1px solid rgba(255,255,255,.35);
+ background:rgba(255,255,255,.15);
+ color:#fff;font-weight:600;
 }
 
-.button-zone{position:relative;height:200px}
+.button-zone{margin-top:14px}
+
 .nav{display:flex;gap:12px}
 .navBtn{width:48%}
-
-/* ---------- PARTICLES LAYER ---------- */
-#particles{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  overflow:hidden;
-  z-index:10;
-}
-
-/* HEART / ROSE */
-.particle{
-  position:absolute;
-  bottom:-40px;
-  width:18px;
-  height:18px;
-  background:linear-gradient(145deg,#ff5f9e,#ff99c8);
-  transform:rotate(45deg);
-  animation:floatUp linear forwards;
-}
-
-.particle::before,
-.particle::after{
-  content:"";
-  position:absolute;
-  width:18px;
-  height:18px;
-  background:inherit;
-  border-radius:50%;
-}
-
-.particle::before{top:-9px;left:0}
-.particle::after{left:-9px;top:0}
-
-@keyframes floatUp{
-  to{
-    transform:translateY(-110vh) rotate(45deg);
-    opacity:0;
-  }
-}
-
-/* ---------- SPARKLER ---------- */
-.spark{
-  position:absolute;
-  width:4px;
-  height:4px;
-  background:#fff;
-  border-radius:50%;
-  animation:spark 1s ease-out forwards;
-}
-
-@keyframes spark{
-  to{
-    transform:translate(var(--x),var(--y));
-    opacity:0;
-  }
-}
-
-/* ---------- LOSE SHAKE ---------- */
-.shake{
-  animation:shake .5s ease;
-}
-
-@keyframes shake{
-  0%{transform:translateX(0)}
-  25%{transform:translateX(-8px)}
-  50%{transform:translateX(8px)}
-  75%{transform:translateX(-6px)}
-  100%{transform:translateX(0)}
-}
 </style>
 </head>
 
@@ -180,37 +105,34 @@ p{font-size:14px;line-height:1.5;margin-bottom:18px}
 <audio id="clickSound" src="click.mp3"></audio>
 <audio id="bgm" src="pretty_bgm.mp3" loop></audio>
 
-<div id="particles"></div>
-
-<!-- ---------- START ---------- -->
 <div class="container animate" id="start">
-  <h1>HEY PALAK</h1>
-  <p>I made a small game.<br>If you want to play, will you play it?</p>
-  <p id="extraMsg"></p>
+ <h1>HEY PALAK</h1>
+ <p>I made a small game.<br>If you want to play, will you play it?</p>
+ <p id="extraMsg"></p>
 
-  <div class="button-zone">
-    <button id="yesBtn">YES</button>
-    <button id="noBtn">NO</button>
-  </div>
+ <div class="button-zone">
+  <button id="yesBtn">YES</button>
+  <button id="noBtn">NO</button>
+ </div>
 </div>
 
 <div class="container hidden" id="intro">
-  <p>If you win the game,<br>you can give me any dare.</p>
-  <button id="okBtn" class="option">OK</button>
+ <p>If you win the game,<br>you can give me any dare.</p>
+ <button class="option" id="okBtn">OK</button>
 </div>
 
 <div class="container hidden" id="rules">
-  <p>You need to win at least<br>7 out of 11 questions.</p>
-  <button class="option" onclick="startGame()">Now start the game</button>
+ <p>You need to win at least<br>7 out of 11 questions.</p>
+ <button class="option" onclick="startGame()">Now start the game</button>
 </div>
 
 <div class="container hidden" id="game">
-  <h2 id="question"></h2>
-  <div id="options"></div>
-  <div class="nav">
-    <button class="navBtn" id="prevBtn">Previous</button>
-    <button class="navBtn" id="nextBtn">Okay</button>
-  </div>
+ <h2 id="question"></h2>
+ <div id="options"></div>
+ <div class="nav">
+  <button class="navBtn" id="prevBtn">Previous</button>
+  <button class="navBtn" id="nextBtn">Okay</button>
+ </div>
 </div>
 
 <div class="container hidden" id="result"></div>
@@ -220,41 +142,42 @@ const clickSound=document.getElementById("clickSound");
 const bgm=document.getElementById("bgm");
 bgm.volume=0.15;
 
-const noBtn=yesBtn=document.getElementById("noBtn");
+const yesBtn=noBtn=null;
 const extraMsg=document.getElementById("extraMsg");
 
-const noMessages=[
-  "Take a moment and think again.",
-  "It is just a small game.",
-  "Maybe you should give it a try.",
-  "I am still waiting for your yes."
+const noBtnEl=document.getElementById("noBtn");
+const yesBtnEl=document.getElementById("yesBtn");
+
+const noMsgs=[
+ "Think once again.",
+ "It is just a small game.",
+ "Give it a try.",
+ "Still waiting for yes."
 ];
 
-let noClicks=0,side=1;
-noBtn.onclick=()=>{
-  clickSound.play().catch(()=>{});
-  extraMsg.innerText=noMessages[noClicks]||"";
-  noClicks++;
-  side*=-1;
-  noBtn.style.transform=`translateX(calc(-50% + ${side*30}px))`;
+let noCount=0;
+
+noBtnEl.onclick=()=>{
+ clickSound.play().catch(()=>{});
+ extraMsg.innerText=noMsgs[Math.min(noCount,noMsgs.length-1)];
+ noCount++;
 };
 
-yesBtn.onclick=()=>{
-  clickSound.play().catch(()=>{});
-  bgm.play().catch(()=>{});
-  start.classList.add("hidden");
-  intro.classList.remove("hidden","animate");
-  intro.classList.add("animate");
+yesBtnEl.onclick=()=>{
+ clickSound.play().catch(()=>{});
+ bgm.play().catch(()=>{});
+ start.classList.add("hidden");
+ intro.classList.remove("hidden");
+ intro.classList.add("animate");
 };
 
 okBtn.onclick=()=>{
-  clickSound.play().catch(()=>{});
-  intro.classList.add("hidden");
-  rules.classList.remove("hidden");
-  rules.classList.add("animate");
+ clickSound.play().catch(()=>{});
+ intro.classList.add("hidden");
+ rules.classList.remove("hidden");
+ rules.classList.add("animate");
 };
 
-/* ---------- GAME ---------- */
 let index=0,score=0,selected=null;
 const answered=new Array(11).fill(false);
 
@@ -266,119 +189,91 @@ const questions=[
  {q:"My Favourite flower?",o:["Rose","Lotus","Lily","Sunflower"],a:"Rose"},
  {q:"What nickname did you give me?",o:["Piku","Prince","Piyu","Prem"],a:"Piku"},
  {q:"Did I ever wish bad for you?",o:["No","Yes","Maybe","Sometimes"],a:"No"},
- {q:"When we met, how old were you?",o:["15","16","17","18"],a:"17"},
+ {q:"When we met, how old were you?",o:["15","16","17","18"],a:"ALL"},
  {q:"Did I ever use Snapchat for you?",o:["Yes","No","Not Sure","Maybe"],a:"Yes"},
  {q:"What is my dream?",o:["Cinematographer","Photographer","Editor","All of these"],a:"All of these"},
  {q:"After you left, did I miss you?",o:["Yes","No","Maybe","Not sure"],a:"Yes"}
 ];
 
-function shuffle(arr){
-  return arr.sort(()=>Math.random()-0.5);
-}
+function shuffle(a){return a.sort(()=>Math.random()-.5)}
 
 function startGame(){
-  rules.classList.add("hidden");
-  game.classList.remove("hidden");
-  game.classList.add("animate");
-  loadQ();
+ rules.classList.add("hidden");
+ game.classList.remove("hidden");
+ game.classList.add("animate");
+ loadQ();
 }
 
 function loadQ(){
-  selected=null;
-  question.innerText=questions[index].q;
-  options.innerHTML="";
-  shuffle([...questions[index].o]).forEach(op=>{
-    const b=document.createElement("button");
-    b.className="option";
-    b.innerText=op;
-    b.onclick=()=>{
-      selected=op;
-      document.querySelectorAll(".option").forEach(x=>x.classList.remove("active"));
-      b.classList.add("active");
-    };
-    options.appendChild(b);
-  });
+ selected=null;
+ question.innerText=questions[index].q;
+ options.innerHTML="";
+ shuffle([...questions[index].o]).forEach(op=>{
+  const b=document.createElement("button");
+  b.className="option";
+  b.innerText=op;
+  b.onclick=()=>{
+   selected=op;
+   document.querySelectorAll(".option").forEach(x=>x.classList.remove("active"));
+   b.classList.add("active");
+  };
+  options.appendChild(b);
+ });
 }
 
 nextBtn.onclick=()=>{
-  if(!selected) return;
-  clickSound.play().catch(()=>{});
-  if(!answered[index]){
-    if(selected===questions[index].a) score++;
-    answered[index]=true;
-  }
-  index++;
-  index>=questions.length?endGame():loadQ();
+ if(!selected) return;
+ clickSound.play().catch(()=>{});
+
+ if(!answered[index]){
+  if(questions[index].a==="ALL"||selected===questions[index].a) score++;
+  answered[index]=true;
+ }
+
+ index++;
+ index>=questions.length?endGame():loadQ();
 };
 
 prevBtn.onclick=()=>{
-  clickSound.play().catch(()=>{});
-  if(index>0){index--;loadQ();}
+ clickSound.play().catch(()=>{});
+ if(index>0){index--;loadQ()}
 };
 
-/* ---------- RESULT ---------- */
+function spawnParticles(){
+ for(let i=0;i<20;i++){
+  const p=document.createElement("div");
+  p.className="particle";
+  p.style.left=Math.random()*100+"vw";
+  p.style.animationDelay=Math.random()*2+"s";
+  document.body.appendChild(p);
+  setTimeout(()=>p.remove(),5000);
+ }
+}
+
 function endGame(){
-  game.classList.add("hidden");
-  result.classList.remove("hidden");
-  result.classList.add("animate");
+ game.classList.add("hidden");
+ result.classList.remove("hidden");
+ result.className="container";
+ void result.offsetWidth;
 
-  if(score>=7){
-    winAnimation();
-    result.innerHTML=`
-      <h1>YOU WON THE GAME</h1>
-      <p>Now give me any dare and I'll complete it</p>
-      <button class="option" onclick="location.reload()">Restart game</button>
-    `;
-  }else{
-    loseAnimation();
-    result.classList.add("shake");
-    result.innerHTML=`
-      <h1>YOU LOST</h1>
-      <p>You scored ${score}/11</p>
-      <button class="option" onclick="location.reload()">Try again</button>
-    `;
-  }
-}
+ spawnParticles();
 
-/* ---------- WIN ---------- */
-function winAnimation(){
-  const layer=document.getElementById("particles");
-
-  // hearts
-  for(let i=0;i<30;i++){
-    const p=document.createElement("div");
-    p.className="particle";
-    p.style.left=Math.random()*100+"vw";
-    p.style.animationDuration=3+Math.random()*2+"s";
-    layer.appendChild(p);
-    setTimeout(()=>p.remove(),5000);
-  }
-
-  // sparkler
-  for(let i=0;i<60;i++){
-    const s=document.createElement("div");
-    s.className="spark";
-    s.style.left="50%";
-    s.style.top="60%";
-    s.style.setProperty("--x",(Math.random()*300-150)+"px");
-    s.style.setProperty("--y",(Math.random()*300-150)+"px");
-    layer.appendChild(s);
-    setTimeout(()=>s.remove(),1000);
-  }
-}
-
-/* ---------- LOSE ---------- */
-function loseAnimation(){
-  const layer=document.getElementById("particles");
-  for(let i=0;i<15;i++){
-    const p=document.createElement("div");
-    p.className="particle";
-    p.style.background="linear-gradient(145deg,#888,#555)";
-    p.style.left=Math.random()*100+"vw";
-    p.style.animationDuration=4+"s";
-    layer.appendChild(p);
-    setTimeout(()=>p.remove(),5000);
-  }
+ if(score>=7){
+  result.classList.add("win");
+  result.innerHTML=`
+   <h1>YOU WON THE GAME</h1>
+   <p>Now give me any dare and I'll complete it</p>
+   <button class="option" onclick="location.reload()">Restart</button>
+  `;
+ }else{
+  result.classList.add("lose");
+  result.innerHTML=`
+   <h1>YOU LOST</h1>
+   <p>You Scored ${score}/11</p>
+   <p>Better Luck Next Time</p>
+   <button class="option" onclick="location.reload()">Retry</button>
+  `;
+ }
 }
 </script>
 
