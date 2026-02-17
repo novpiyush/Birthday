@@ -19,12 +19,13 @@ body{
   justify-content:center;
   align-items:center;
   background:
-    linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)),
+    linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
     url("bg.png") center/cover no-repeat;
   color:#fff;
   overflow:hidden;
 }
 
+/* Glass UI container */
 .container{
   width:90%;
   max-width:420px;
@@ -32,10 +33,11 @@ body{
   border-radius:22px;
   background:rgba(255,182,193,0.18);
   backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
   border:1px solid rgba(255,255,255,0.25);
   box-shadow:0 20px 40px rgba(0,0,0,0.35);
   text-align:center;
-  animation:slideIn .45s ease;
+  animation:slideIn 0.45s ease;
 }
 
 .hidden{display:none}
@@ -45,29 +47,35 @@ body{
   to{opacity:1;transform:translateY(0)}
 }
 
-h1,h2{margin-bottom:14px}
-p{font-size:14px;line-height:1.45;margin-bottom:20px}
+h1,h2{margin-bottom:14px;letter-spacing:1px}
 
-button{
-  outline:none;
-  -webkit-tap-highlight-color:transparent;
+p{
+  font-size:14px;
+  color:#f1f1f1;
+  margin-bottom:20px;
+  line-height:1.45;
 }
 
+/* Buttons */
 .option,.navBtn{
   width:100%;
   padding:13px;
   margin-top:10px;
   border-radius:30px;
-  border:1px solid rgba(255,255,255,.35);
-  background:rgba(255,255,255,.15);
+  border:1px solid rgba(255,255,255,0.35);
+  background:rgba(255,255,255,0.15);
   color:#fff;
   cursor:pointer;
-  transition:.25s;
+  transition:0.25s;
 }
 
 .option:hover,.navBtn:hover{
-  background:#fff;
+  background:rgba(255,255,255,0.85);
   color:#000;
+}
+
+.option:focus,.navBtn:focus{
+  outline:none;
 }
 
 #yesBtn{
@@ -80,24 +88,26 @@ button{
   font-weight:700;
 }
 
-.button-zone{
-  position:relative;
-  height:180px;
-}
-
 #noBtn{
   width:120px;
   padding:12px;
   border-radius:30px;
-  background:rgba(0,0,0,.45);
-  border:1px solid rgba(255,255,255,.3);
+  background:rgba(0,0,0,0.45);
+  border:1px solid rgba(255,255,255,0.3);
   color:#fff;
   position:absolute;
   top:95px;
   left:50%;
   transform:translateX(-50%);
+  z-index:5;
 }
 
+.button-zone{
+  position:relative;
+  height:180px;
+}
+
+/* Navigation */
 .nav{
   display:flex;
   justify-content:space-between;
@@ -107,6 +117,7 @@ button{
 
 .navBtn{width:48%}
 
+/* Sparkle animation */
 .sparkle{
   position:fixed;
   width:4px;
@@ -129,6 +140,7 @@ button{
 <audio id="okSound" src="ok.mp3"></audio>
 <audio id="bgm" src="pretty_bgm.mp3" loop></audio>
 
+<!-- START -->
 <div class="container" id="start">
   <h1>HEY PALAK</h1>
   <p>I made a small game.<br>If you want to play, will you play it?</p>
@@ -140,16 +152,19 @@ button{
   </div>
 </div>
 
+<!-- INTRO -->
 <div class="container hidden" id="intro">
   <p>If you win the game,<br>you can give me any dare.</p>
   <button id="okBtn" class="option">OK</button>
 </div>
 
+<!-- RULES -->
 <div class="container hidden" id="rules">
-  <p>You need to win at least<br>7 out of 11 questions.</p>
+  <p>You need to win at least<br>7 out of 11 questions.<br>So play carefully.</p>
   <button class="option" onclick="startGame()">NOW START THE GAME</button>
 </div>
 
+<!-- GAME -->
 <div class="container hidden" id="game">
   <h2 id="question"></h2>
   <div id="options"></div>
@@ -160,25 +175,62 @@ button{
   </div>
 </div>
 
+<!-- RESULT -->
 <div class="container hidden" id="result"></div>
 
 <script>
 const clickSound=document.getElementById("clickSound");
 const okSound=document.getElementById("okSound");
 const bgm=document.getElementById("bgm");
-bgm.volume=0.15;
+bgm.volume=0.08;
 
-let index=0,score=0,selected=null;
+const noBtn=document.getElementById("noBtn");
+const extraMsg=document.getElementById("extraMsg");
+let noClicks=0;
+const noMessages=[
+  "Take a moment and think again.",
+  "It is just a small game.",
+  "Maybe you should give it a try.",
+  "I am still waiting for your yes."
+];
+
+noBtn.onclick=()=>{
+  noClicks++;
+  if(noClicks<=noMessages.length){
+    extraMsg.innerText=noMessages[noClicks-1];
+  }
+  const x=Math.random()*50+25;
+  const y=Math.random()*60+20;
+  noBtn.style.left=x+"%";
+  noBtn.style.top=y+"px";
+};
+
+yesBtn.onclick=()=>{
+  clickSound.play().catch(()=>{});
+  bgm.play().catch(()=>{});
+  start.classList.add("hidden");
+  intro.classList.remove("hidden");
+};
+
+okBtn.onclick=()=>{
+  clickSound.play().catch(()=>{});
+  intro.classList.add("hidden");
+  rules.classList.remove("hidden");
+};
+
+let index=0;
+let score=0;
+let selected=null;
 
 const questions=[
  {q:"How did we meet for the first time?",o:["You shared a post on Instagram","Through a friend","Random chat","Comment section"],a:"You shared a post on Instagram"},
  {q:"What nickname did I give you?",o:["Palku","Priya","Pihu","Pratibha"],a:"Palku"},
  {q:"When is my birthday?",o:["15 Nov","16 Nov","17 Nov","18 Nov"],a:"17 Nov"},
  {q:"My favourite colour is?",o:["Black and White","Blue","Red","Grey"],a:"Black and White"},
- {q:"My Favourite flower?",o:["Rose and Lotus","Rose","Lily","Sunflower"],a:"Rose and Lotus"},
+ {q:"My Favourite flower?",o:["Rose and Lotus","Lily","Tulip","Sunflower"],a:"Rose and Lotus"},
  {q:"What nickname did you give me?",o:["Piku","Prince","Piyu","Prem"],a:"Piku"},
  {q:"Did I ever wish bad for you?",o:["No","Yes","Maybe","Sometimes"],a:"No"},
- {q:"When we met, how old were you?",o:["15","16","17","18"],a:["15","16","17","18"]},
+ {q:"When we met, how old were you?",o:["15","16","17","18"],a:"15"},
  {q:"Did I ever use Snapchat for you?",o:["Yes","No","Not Sure","Maybe"],a:"Yes"},
  {q:"What is my dream?",o:["Cinematographer","Photographer","Editor","All of these"],a:"All of these"},
  {q:"After you left, did I miss you?",o:["Yes","No","Maybe","Not sure"],a:"Yes"}
@@ -200,7 +252,7 @@ function loadQ(){
     b.innerText=op;
     b.onclick=()=>{
       selected=op;
-      document.querySelectorAll(".option").forEach(x=>x.style.opacity=".6");
+      document.querySelectorAll(".option").forEach(x=>x.style.opacity="0.6");
       b.style.opacity="1";
     };
     options.appendChild(b);
@@ -208,40 +260,29 @@ function loadQ(){
 }
 
 prevBtn.onclick=()=>{
-  clickSound.play();
+  clickSound.play().catch(()=>{});
   if(index>0){index--;loadQ();}
 };
 
 nextBtn.onclick=()=>{
-  if(!selected) return;
-  clickSound.play(); // YES wala sound
-  const ans=questions[index].a;
-  if(Array.isArray(ans)?ans.includes(selected):selected===ans) score++;
+  if(!selected)return;
+  clickSound.play().catch(()=>{});
+  score++;
   index++;
-  index>=questions.length?endGame():loadQ();
-};
-
-yesBtn.onclick=()=>{
-  clickSound.play();
-  bgm.play();
-  start.classList.add("hidden");
-  intro.classList.remove("hidden");
-};
-
-okBtn.onclick=()=>{
-  okSound.play();
-  intro.classList.add("hidden");
-  rules.classList.remove("hidden");
+  if(index>=questions.length){endGame();}
+  else{loadQ();}
 };
 
 function endGame(){
   game.classList.add("hidden");
   result.classList.remove("hidden");
   result.innerHTML=`
-    <h1>${score>=7?"YOU WON THE GAME":"GAME OVER"}</h1>
-    <p>You scored ${score} out of ${questions.length}</p>
-    <button class="option" onclick="location.reload()">RESTART GAME</button>`;
-  if(score>=7) sparkles();
+    <h1>YOU WON THE GAME</h1>
+    <p>You won by scoring ${score} out of ${questions.length}</p>
+    <p>Now you can give me any dare<br>and I will complete it.</p>
+    <button class="option" onclick="location.reload()">RESTART GAME</button>
+  `;
+  sparkles();
 }
 
 function sparkles(){
@@ -253,7 +294,7 @@ function sparkles(){
     s.style.bottom="0";
     document.body.appendChild(s);
     setTimeout(()=>s.remove(),4000);
-    if(++c>140) clearInterval(i);
+    if(++c>120)clearInterval(i);
   },70);
 }
 </script>
