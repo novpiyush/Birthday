@@ -14,18 +14,22 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+html,body{
+  height:100%;
+}
+
 body{
-  min-height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
   background:
     linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
-    url("bg.png") center/cover no-repeat;
+    url("bg.png") center center / cover no-repeat fixed;
   color:#fff;
   overflow:hidden;
 }
 
+/* GLASS UI */
 .container{
   width:90%;
   max-width:420px;
@@ -36,18 +40,20 @@ body{
   border:1px solid rgba(255,255,255,0.25);
   box-shadow:0 20px 40px rgba(0,0,0,0.35);
   text-align:center;
-  animation:slideIn .45s ease;
+  opacity:1;
+  transform:none;
 }
 
 .hidden{display:none}
 
-@keyframes slideIn{
-  from{opacity:0;transform:translateY(40px)}
-  to{opacity:1;transform:translateY(0)}
+/* SLIDE UP ANIMATION */
+.animate{
+  animation:slideUp .45s ease forwards;
 }
 
-.animate{
-  animation:slideIn .45s ease;
+@keyframes slideUp{
+  from{opacity:0;transform:translateY(40px)}
+  to{opacity:1;transform:translateY(0)}
 }
 
 p{font-size:14px;line-height:1.45;margin-bottom:20px}
@@ -62,11 +68,9 @@ p{font-size:14px;line-height:1.45;margin-bottom:20px}
   color:#fff;
   cursor:pointer;
   font-weight:600;
-  transition:transform .15s ease;
 }
 
 .option.active,
-.option:active,
 .navBtn:active{
   background:#fff;
   color:#000;
@@ -80,7 +84,6 @@ p{font-size:14px;line-height:1.45;margin-bottom:20px}
   background:#fff;
   color:#000;
   font-weight:700;
-  text-transform:uppercase;
 }
 
 #noBtn{
@@ -95,7 +98,6 @@ p{font-size:14px;line-height:1.45;margin-bottom:20px}
   bottom:15px;
   left:50%;
   transform:translateX(-50%);
-  transition:.35s;
 }
 
 #noBtn.active{
@@ -120,10 +122,9 @@ p{font-size:14px;line-height:1.45;margin-bottom:20px}
 <body>
 
 <audio id="clickSound" src="click.mp3"></audio>
-<audio id="okSound" src="ok.mp3"></audio>
 <audio id="bgm" src="pretty_bgm.mp3" loop></audio>
 
-<div class="container" id="start">
+<div class="container animate" id="start">
   <h1>HEY PALAK</h1>
   <p>I made a small game.<br>If you want to play, will you play it?</p>
   <p id="extraMsg"></p>
@@ -158,9 +159,12 @@ p{font-size:14px;line-height:1.45;margin-bottom:20px}
 <script>
 const clickSound=document.getElementById("clickSound");
 const bgm=document.getElementById("bgm");
-bgm.volume=.15;
+bgm.volume=0.15;
 
 const extraMsg=document.getElementById("extraMsg");
+const noBtn=document.getElementById("noBtn");
+const yesBtn=document.getElementById("yesBtn");
+
 const noMessages=[
   "Take a moment and think again.",
   "It is just a small game.",
@@ -193,6 +197,7 @@ yesBtn.onclick=()=>{
 
   start.classList.add("hidden");
   intro.classList.remove("hidden");
+  intro.classList.add("animate");
 };
 
 okBtn.onclick=()=>{
@@ -201,9 +206,12 @@ okBtn.onclick=()=>{
 
   intro.classList.add("hidden");
   rules.classList.remove("hidden");
+  rules.classList.add("animate");
 };
 
-let index=0,score=0,selected=null;
+let index=0;
+let score=0;
+let selected=null;
 const answered=new Array(11).fill(false);
 
 const questions=[
@@ -223,6 +231,7 @@ const questions=[
 function startGame(){
   rules.classList.add("hidden");
   game.classList.remove("hidden");
+  game.classList.add("animate");
   loadQ();
 }
 
@@ -230,6 +239,7 @@ function loadQ(){
   selected=null;
   question.innerText=questions[index].q;
   options.innerHTML="";
+
   questions[index].o.forEach(op=>{
     const b=document.createElement("button");
     b.className="option";
@@ -286,5 +296,6 @@ function endGame(){
   `;
 }
 </script>
+
 </body>
 </html>
