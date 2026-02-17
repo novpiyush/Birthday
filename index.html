@@ -2,188 +2,274 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<title>Memory Game</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quiz Game</title>
 
 <style>
-body {
-  margin: 0;
-  height: 100vh;
-  background: #9e9e9e;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: Arial, sans-serif;
-  overflow: hidden;
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Segoe UI", Arial, sans-serif;
 }
 
-#bg-animation {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
+body{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:
+    linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+    url("bg.png") center/cover no-repeat;
+  color:#fff;
+  overflow:hidden;
 }
 
-.card {
-  background: #b7aaaa;
-  padding: 24px;
-  border-radius: 18px;
-  width: 85%;
-  max-width: 360px;
-  text-align: center;
-  z-index: 1;
+/* Glass UI */
+.container{
+  width:90%;
+  max-width:420px;
+  padding:26px;
+  border-radius:22px;
+  background:rgba(255,182,193,0.18);
+  backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,0.25);
+  box-shadow:0 20px 40px rgba(0,0,0,0.35);
+  text-align:center;
+  animation:slideIn .45s ease;
 }
 
-h2 {
-  margin-bottom: 18px;
+.hidden{display:none}
+
+@keyframes slideIn{
+  from{opacity:0;transform:translateY(40px)}
+  to{opacity:1;transform:translateY(0)}
 }
 
-#options button {
-  width: 100%;
-  padding: 12px;
-  margin: 8px 0;
-  border-radius: 25px;
-  border: none;
-  background: rgba(255,255,255,0.35);
-  font-size: 15px;
+.option,.navBtn{
+  width:100%;
+  padding:13px;
+  margin-top:10px;
+  border-radius:30px;
+  border:1px solid rgba(255,255,255,0.35);
+  background:rgba(255,255,255,0.15);
+  color:#fff;
+  cursor:pointer;
 }
 
-#options button.selected {
-  background: white;
+.option:hover,.navBtn:hover{
+  background:#fff;
+  color:#000;
 }
 
-.nav {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 16px;
+#yesBtn{
+  background:#fff;
+  color:#000;
+  font-weight:700;
+  border:none;
+  border-radius:40px;
+  padding:14px;
 }
 
-.nav button {
-  padding: 10px 22px;
-  border-radius: 25px;
-  border: none;
-  background: rgba(255,255,255,0.3);
+.button-zone{
+  position:relative;
+  height:180px;
+}
+
+#noBtn{
+  position:absolute;
+  width:120px;
+  padding:12px;
+  border-radius:30px;
+  background:rgba(0,0,0,0.45);
+  border:1px solid rgba(255,255,255,0.3);
+  color:#fff;
+  left:50%;
+  top:100px;
+  transform:translateX(-50%);
+}
+
+.nav{
+  display:flex;
+  gap:12px;
+  margin-top:18px;
+}
+.navBtn{width:48%}
+
+/* Sparkles */
+.sparkle{
+  position:fixed;
+  width:4px;
+  height:4px;
+  background:white;
+  opacity:0;
+  animation:spark 4s linear forwards;
+}
+@keyframes spark{
+  0%{transform:translateY(0);opacity:1}
+  100%{transform:translateY(-320px);opacity:0}
 }
 </style>
 </head>
 
 <body>
 
-<div id="bg-animation"></div>
+<audio id="clickSound" src="click.mp3"></audio>
+<audio id="okSound" src="ok.mp3"></audio>
+<audio id="bgm" src="pretty_bgm.mp3" loop></audio>
 
-<div class="card">
-  <h2 id="question"></h2>
-  <div id="options"></div>
-
-  <div class="nav">
-    <button id="prev">PREVIOUS</button>
-    <button id="next">OKAY</button>
+<div class="container" id="start">
+  <h1>HEY PALAK</h1>
+  <p>I made a small game.<br>If you want to play, will you play it?</p>
+  <p id="extraMsg"></p>
+  <div class="button-zone">
+    <button id="yesBtn">YES</button>
+    <button id="noBtn">NO</button>
   </div>
 </div>
 
-<audio id="yesSound" src="yes.mp3"></audio>
-<audio id="okSound" src="ok.mp3"></audio>
-<audio id="bgMusic" src="bg.mp3" loop></audio>
+<div class="container hidden" id="intro">
+  <p>If you win the game,<br>you can give me any dare.</p>
+  <button id="okBtn" class="option">OK</button>
+</div>
+
+<div class="container hidden" id="rules">
+  <p>You need to win at least<br>7 out of 11 questions.</p>
+  <button class="option" onclick="startGame()">NOW START THE GAME</button>
+</div>
+
+<div class="container hidden" id="game">
+  <h2 id="question"></h2>
+  <div id="options"></div>
+  <div class="nav">
+    <button class="navBtn" id="prevBtn">PREVIOUS</button>
+    <button class="navBtn" id="nextBtn">OKAY</button>
+  </div>
+</div>
+
+<div class="container hidden" id="result"></div>
 
 <script>
-const questions = [
-  {
-    q: "When is my birthday?",
-    o: ["15 November", "16 November", "17 November", "18 November"],
-    a: "16 November"
-  },
-  {
-    q: "Favourite flower?",
-    o: ["Rose and Lotus", "Sunflower", "Jasmine", "Lily"],
-    a: "Rose and Lotus"
-  }
-  // baaki questions yahi format me add karna
+const clickSound=document.getElementById("clickSound");
+const okSound=document.getElementById("okSound");
+const bgm=document.getElementById("bgm");
+
+bgm.volume=0.08;
+
+/* NO button */
+const noBtn=document.getElementById("noBtn");
+const zone=document.querySelector(".button-zone");
+const extraMsg=document.getElementById("extraMsg");
+let noClicks=0;
+
+noBtn.onclick=()=>{
+  noClicks++;
+  const msgs=[
+    "Think again.",
+    "Just a small game.",
+    "Give it a try.",
+    "Still waiting for yes."
+  ];
+  extraMsg.innerText=msgs[noClicks%msgs.length];
+
+  const maxX=zone.clientWidth-140;
+  const x=Math.random()*maxX;
+  const y=90+Math.random()*40;
+  noBtn.style.left=x+"px";
+  noBtn.style.top=y+"px";
+};
+
+/* Flow */
+yesBtn.onclick=()=>{
+  clickSound.play();
+  bgm.play();
+  start.classList.add("hidden");
+  intro.classList.remove("hidden");
+};
+
+okBtn.onclick=()=>{
+  okSound.play();
+  intro.classList.add("hidden");
+  rules.classList.remove("hidden");
+};
+
+/* Game */
+let index=0,score=0,selected=null;
+
+const questions=[
+{q:"How did we meet for the first time?",o:["You shared a post on Instagram","Through a friend","Random chat","Comment section"],a:"You shared a post on Instagram"},
+{q:"What nickname did I give you?",o:["Palku","Priya","Pihu","Pratibha"],a:"Palku"},
+{q:"When is my birthday?",o:["15 November","16 November","17 November","18 November"],a:"17 November"},
+{q:"My favourite colour is?",o:["Black and White","Blue","Red","Grey"],a:"Black and White"},
+{q:"My favourite flower?",o:["Rose And Lotus","Tulip","Lily","Sunflower"],a:"Rose And Lotus"},
+{q:"What nickname did you give me?",o:["Piku","Prince","Piyu","Prem"],a:"Piku"},
+{q:"Did I ever wish bad for you?",o:["No","No","No","No"],a:"No"},
+{q:"When we met, how old were you?",o:["15","16","17","18"],a:"15"},
+{q:"Did I ever use Snapchat for you?",o:["Yes","Yes","Yes","Yes"],a:"Yes"},
+{q:"What is my dream?",o:["Cinematographer","Photographer","Editor","All of these"],a:"All of these"},
+{q:"After you left, did I miss you?",o:["Yes","Yes","Yes","Yes"],a:"Yes"}
 ];
 
-let index = 0;
-let score = 0;
-let selected = null;
-let answered = false;
+function startGame(){
+  rules.classList.add("hidden");
+  game.classList.remove("hidden");
+  loadQ();
+}
 
-const questionEl = document.getElementById("question");
-const optionsEl = document.getElementById("options");
-const nextBtn = document.getElementById("next");
-const prevBtn = document.getElementById("prev");
-
-const yesSound = document.getElementById("yesSound");
-const okSound = document.getElementById("okSound");
-const bgMusic = document.getElementById("bgMusic");
-
-bgMusic.volume = 0.2;
-bgMusic.play();
-
-function loadQuestion() {
-  answered = false;
-  selected = null;
-  optionsEl.innerHTML = "";
-
-  questionEl.innerText = questions[index].q;
-
-  questions[index].o.forEach(opt => {
-    const btn = document.createElement("button");
-    btn.innerText = opt;
-
-    btn.onclick = () => {
-      if (answered) return;
-
-      document
-        .querySelectorAll("#options button")
-        .forEach(b => b.classList.remove("selected"));
-
-      btn.classList.add("selected");
-      selected = opt;
+function loadQ(){
+  selected=null;
+  question.innerText=questions[index].q;
+  options.innerHTML="";
+  questions[index].o.forEach(op=>{
+    const b=document.createElement("button");
+    b.className="option";
+    b.innerText=op;
+    b.onclick=()=>{
+      selected=op;
+      document.querySelectorAll(".option").forEach(x=>x.style.opacity=.5);
+      b.style.opacity=1;
     };
-
-    optionsEl.appendChild(btn);
+    options.appendChild(b);
   });
 }
 
-nextBtn.onclick = () => {
-  if (!selected || answered) return;
+prevBtn.onclick=()=>{
+  clickSound.play();
+  if(index>0){index--;loadQ();}
+};
 
-  answered = true;
-  yesSound.currentTime = 0;
-  yesSound.play();
-
-  if (selected === questions[index].a) {
-    score++;
-  }
-
+nextBtn.onclick=()=>{
+  if(!selected)return;
+  clickSound.play();
+  if(selected===questions[index].a)score++;
   index++;
-
-  setTimeout(() => {
-    if (index >= questions.length) {
-      endGame();
-    } else {
-      loadQuestion();
-    }
-  }, 200);
+  index>=questions.length?endGame():loadQ();
 };
 
-prevBtn.onclick = () => {
-  if (index === 0) return;
-  okSound.currentTime = 0;
-  okSound.play();
-  index--;
-  loadQuestion();
-};
-
-function endGame() {
-  document.body.innerHTML = `
-    <div class="card">
-      <h1>YOU WON THE GAME</h1>
-      <p>You won by scoring ${score} out of ${questions.length}</p>
-      <p>Now you can give me any dare and I will complete it.</p>
-      <button onclick="location.reload()">RESTART GAME</button>
-    </div>
+function endGame(){
+  game.classList.add("hidden");
+  result.classList.remove("hidden");
+  result.innerHTML=`
+    <h1>YOU WON THE GAME</h1>
+    <p>You scored ${score} out of ${questions.length}</p>
+    <p>Now you can give me any dare</p>
+    <button class="option" onclick="location.reload()">RESTART GAME</button>
   `;
+  sparkles();
 }
 
-loadQuestion();
+function sparkles(){
+  let c=0;
+  let i=setInterval(()=>{
+    const s=document.createElement("div");
+    s.className="sparkle";
+    s.style.left=Math.random()*100+"vw";
+    s.style.bottom="0";
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),4000);
+    if(++c>140)clearInterval(i);
+  },70);
+}
 </script>
 
 </body>
