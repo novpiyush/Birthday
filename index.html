@@ -92,8 +92,7 @@ p{font-size:14px;line-height:1.45;margin-bottom:20px}
   bottom:15px;
   left:50%;
   transform:translateX(-50%);
-  transition:transform .35s ease,background .25s,color .25s;
-  overflow:hidden;
+  transition:.35s;
 }
 
 #noBtn.active{
@@ -171,27 +170,46 @@ const okSound=document.getElementById("okSound");
 const bgm=document.getElementById("bgm");
 bgm.volume=.15;
 
-let noSide=1,noClicks=0;
-const noBtn=document.getElementById("noBtn");
 const extraMsg=document.getElementById("extraMsg");
+const noMessages=[
+  "Take a moment and think again.",
+  "It is just a small game.",
+  "Maybe you should give it a try.",
+  "I am still waiting for your yes."
+];
+
+let noClicks=0,noSide=1;
 
 noBtn.onclick=()=>{
+  clickSound.currentTime=0;
   clickSound.play().catch(()=>{});
+
   noClicks++;
+  if(noClicks<=noMessages.length){
+    extraMsg.innerText=noMessages[noClicks-1];
+  }
+
   noBtn.classList.add("active");
   setTimeout(()=>noBtn.classList.remove("active"),200);
+
   noSide*=-1;
   noBtn.style.transform=`translateX(calc(-50% + ${noSide*30}px))`;
 };
 
 yesBtn.onclick=()=>{
+  clickSound.currentTime=0;
   clickSound.play().catch(()=>{});
+
+  yesBtn.classList.add("active");
+  setTimeout(()=>yesBtn.classList.remove("active"),150);
+
   bgm.play().catch(()=>{});
   start.classList.add("hidden");
   intro.classList.remove("hidden");
 };
 
 okBtn.onclick=()=>{
+  okSound.currentTime=0;
   okSound.play().catch(()=>{});
   intro.classList.add("hidden");
   rules.classList.remove("hidden");
