@@ -10,7 +10,7 @@
   margin:0;
   padding:0;
   box-sizing:border-box;
-  font-family:"Segoe UI", Arial, sans-serif;
+  font-family:Segoe UI, Arial, sans-serif;
 }
 
 body{
@@ -19,42 +19,34 @@ body{
   justify-content:center;
   align-items:center;
   background:
-    linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+    linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
     url("bg.png") center/cover no-repeat;
   color:#fff;
   overflow:hidden;
 }
 
-/* Glass UI */
 .container{
   width:90%;
   max-width:420px;
   padding:26px;
   border-radius:22px;
-  background:rgba(255,182,193,0.18);
+  background:rgba(255,182,193,.18);
   backdrop-filter:blur(14px);
-  border:1px solid rgba(255,255,255,0.25);
-  box-shadow:0 20px 40px rgba(0,0,0,0.35);
+  border:1px solid rgba(255,255,255,.25);
+  box-shadow:0 20px 40px rgba(0,0,0,.35);
   text-align:center;
-  animation:slideIn .45s ease;
 }
 
 .hidden{display:none}
-
-@keyframes slideIn{
-  from{opacity:0;transform:translateY(40px)}
-  to{opacity:1;transform:translateY(0)}
-}
 
 .option,.navBtn{
   width:100%;
   padding:13px;
   margin-top:10px;
   border-radius:30px;
-  border:1px solid rgba(255,255,255,0.35);
-  background:rgba(255,255,255,0.15);
+  border:1px solid rgba(255,255,255,.35);
+  background:rgba(255,255,255,.15);
   color:#fff;
-  cursor:pointer;
 }
 
 .option:hover,.navBtn:hover{
@@ -66,9 +58,6 @@ body{
   background:#fff;
   color:#000;
   font-weight:700;
-  border:none;
-  border-radius:40px;
-  padding:14px;
 }
 
 .button-zone{
@@ -78,15 +67,11 @@ body{
 
 #noBtn{
   position:absolute;
-  width:120px;
-  padding:12px;
-  border-radius:30px;
-  background:rgba(0,0,0,0.45);
-  border:1px solid rgba(255,255,255,0.3);
-  color:#fff;
+  bottom:10px;
   left:50%;
-  top:100px;
   transform:translateX(-50%);
+  width:120px;
+  background:rgba(0,0,0,.45);
 }
 
 .nav{
@@ -95,20 +80,6 @@ body{
   margin-top:18px;
 }
 .navBtn{width:48%}
-
-/* Sparkles */
-.sparkle{
-  position:fixed;
-  width:4px;
-  height:4px;
-  background:white;
-  opacity:0;
-  animation:spark 4s linear forwards;
-}
-@keyframes spark{
-  0%{transform:translateY(0);opacity:1}
-  100%{transform:translateY(-320px);opacity:0}
-}
 </style>
 </head>
 
@@ -122,99 +93,73 @@ body{
   <h1>HEY PALAK</h1>
   <p>I made a small game.<br>If you want to play, will you play it?</p>
   <p id="extraMsg"></p>
-  <div class="button-zone">
-    <button id="yesBtn">YES</button>
-    <button id="noBtn">NO</button>
+
+  <div class="button-zone" id="zone">
+    <button id="yesBtn" class="option">YES</button>
+    <button id="noBtn" class="option">NO</button>
   </div>
-</div>
-
-<div class="container hidden" id="intro">
-  <p>If you win the game,<br>you can give me any dare.</p>
-  <button id="okBtn" class="option">OK</button>
-</div>
-
-<div class="container hidden" id="rules">
-  <p>You need to win at least<br>7 out of 11 questions.</p>
-  <button class="option" onclick="startGame()">NOW START THE GAME</button>
 </div>
 
 <div class="container hidden" id="game">
   <h2 id="question"></h2>
   <div id="options"></div>
+
   <div class="nav">
-    <button class="navBtn" id="prevBtn">PREVIOUS</button>
-    <button class="navBtn" id="nextBtn">OKAY</button>
+    <button id="prevBtn" class="navBtn">PREVIOUS</button>
+    <button id="nextBtn" class="navBtn">OKAY</button>
   </div>
 </div>
 
 <div class="container hidden" id="result"></div>
 
 <script>
-const clickSound=document.getElementById("clickSound");
-const okSound=document.getElementById("okSound");
 const bgm=document.getElementById("bgm");
+bgm.volume=0.12;
 
-bgm.volume=0.08;
-
-/* NO button */
 const noBtn=document.getElementById("noBtn");
-const zone=document.querySelector(".button-zone");
+const zone=document.getElementById("zone");
 const extraMsg=document.getElementById("extraMsg");
-let noClicks=0;
+
+let noCount=0;
+const msgs=[
+ "Think once more.",
+ "It is just a game.",
+ "Give it a try.",
+ "Still waiting for yes."
+];
 
 noBtn.onclick=()=>{
-  noClicks++;
-  const msgs=[
-    "Think again.",
-    "Just a small game.",
-    "Give it a try.",
-    "Still waiting for yes."
-  ];
-  extraMsg.innerText=msgs[noClicks%msgs.length];
+  noCount++;
+  if(noCount<=msgs.length) extraMsg.innerText=msgs[noCount-1];
 
-  const maxX=zone.clientWidth-140;
-  const x=Math.random()*maxX;
-  const y=90+Math.random()*40;
+  const z=zone.getBoundingClientRect();
+  const b=noBtn.getBoundingClientRect();
+
+  const minX=20;
+  const maxX=z.width-b.width-20;
+  const minY=20;
+  const maxY=z.height-b.height-80;
+
+  const x=Math.random()*(maxX-minX)+minX;
+  const y=Math.random()*(maxY-minY)+minY;
+
   noBtn.style.left=x+"px";
   noBtn.style.top=y+"px";
 };
 
-/* Flow */
 yesBtn.onclick=()=>{
-  clickSound.play();
-  bgm.play();
+  bgm.play().catch(()=>{});
   start.classList.add("hidden");
-  intro.classList.remove("hidden");
+  game.classList.remove("hidden");
+  loadQ();
 };
 
-okBtn.onclick=()=>{
-  okSound.play();
-  intro.classList.add("hidden");
-  rules.classList.remove("hidden");
-};
-
-/* Game */
 let index=0,score=0,selected=null;
 
 const questions=[
-{q:"How did we meet for the first time?",o:["You shared a post on Instagram","Through a friend","Random chat","Comment section"],a:"You shared a post on Instagram"},
-{q:"What nickname did I give you?",o:["Palku","Priya","Pihu","Pratibha"],a:"Palku"},
-{q:"When is my birthday?",o:["15 November","16 November","17 November","18 November"],a:"17 November"},
-{q:"My favourite colour is?",o:["Black and White","Blue","Red","Grey"],a:"Black and White"},
-{q:"My favourite flower?",o:["Rose And Lotus","Tulip","Lily","Sunflower"],a:"Rose And Lotus"},
-{q:"What nickname did you give me?",o:["Piku","Prince","Piyu","Prem"],a:"Piku"},
-{q:"Did I ever wish bad for you?",o:["No","No","No","No"],a:"No"},
-{q:"When we met, how old were you?",o:["15","16","17","18"],a:"15"},
-{q:"Did I ever use Snapchat for you?",o:["Yes","Yes","Yes","Yes"],a:"Yes"},
-{q:"What is my dream?",o:["Cinematographer","Photographer","Editor","All of these"],a:"All of these"},
-{q:"After you left, did I miss you?",o:["Yes","Yes","Yes","Yes"],a:"Yes"}
+ {q:"When is my birthday?",o:["15 November","16 November","17 November","18 November"],a:"17 November"},
+ {q:"My favourite flower?",o:["Rose and Lotus","Sunflower","Lily","Jasmine"],a:"Rose and Lotus"}
 ];
-
-function startGame(){
-  rules.classList.add("hidden");
-  game.classList.remove("hidden");
-  loadQ();
-}
 
 function loadQ(){
   selected=null;
@@ -224,52 +169,29 @@ function loadQ(){
     const b=document.createElement("button");
     b.className="option";
     b.innerText=op;
-    b.onclick=()=>{
-      selected=op;
-      document.querySelectorAll(".option").forEach(x=>x.style.opacity=.5);
-      b.style.opacity=1;
-    };
+    b.onclick=()=>{selected=op};
     options.appendChild(b);
   });
 }
 
+nextBtn.onclick=()=>{
+  if(!selected) return;
+  if(selected===questions[index].a) score++;
+  index++;
+  if(index>=questions.length){
+    game.classList.add("hidden");
+    result.classList.remove("hidden");
+    result.innerHTML=`
+      <h1>YOU WON THE GAME</h1>
+      <p>Score ${score}/${questions.length}</p>
+      <p>Now you can give me any dare</p>
+    `;
+  }else loadQ();
+};
+
 prevBtn.onclick=()=>{
-  clickSound.play();
   if(index>0){index--;loadQ();}
 };
-
-nextBtn.onclick=()=>{
-  if(!selected)return;
-  clickSound.play();
-  if(selected===questions[index].a)score++;
-  index++;
-  index>=questions.length?endGame():loadQ();
-};
-
-function endGame(){
-  game.classList.add("hidden");
-  result.classList.remove("hidden");
-  result.innerHTML=`
-    <h1>YOU WON THE GAME</h1>
-    <p>You scored ${score} out of ${questions.length}</p>
-    <p>Now you can give me any dare</p>
-    <button class="option" onclick="location.reload()">RESTART GAME</button>
-  `;
-  sparkles();
-}
-
-function sparkles(){
-  let c=0;
-  let i=setInterval(()=>{
-    const s=document.createElement("div");
-    s.className="sparkle";
-    s.style.left=Math.random()*100+"vw";
-    s.style.bottom="0";
-    document.body.appendChild(s);
-    setTimeout(()=>s.remove(),4000);
-    if(++c>140)clearInterval(i);
-  },70);
-}
 </script>
 
 </body>
