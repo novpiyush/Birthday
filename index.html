@@ -96,8 +96,12 @@ p{color:#bdbdbd;font-size:14px;margin-bottom:22px;line-height:1.4}
 
 <body>
 
+<!-- SFX -->
 <audio id="clickSound" src="click.mp3" preload="auto"></audio>
 <audio id="okSound" src="ok.mp3" preload="auto"></audio>
+
+<!-- 🎵 BACKGROUND MUSIC -->
+<audio id="bgm" src="pretty_bgm.mp3" loop></audio>
 
 <div class="container" id="start">
   <h1>HEY PALAK</h1>
@@ -135,6 +139,9 @@ const noBtn = document.getElementById("noBtn");
 const zone = document.querySelector(".button-zone");
 const extraMsg = document.getElementById("extraMsg");
 const okBtn = document.getElementById("okBtn");
+const bgm = document.getElementById("bgm");
+
+bgm.volume = 0.15; // 🔉 soft romantic volume
 
 let noClicks = 0;
 const noMessages = [
@@ -160,6 +167,9 @@ noBtn.onclick = () => {
 yesBtn.onclick = () => {
   clickSound.currentTime = 0;
   clickSound.play().catch(()=>{});
+
+  bgm.play().catch(()=>{}); // 🎵 START BGM HERE
+
   start.classList.add("hidden");
   intro.classList.remove("hidden");
 };
