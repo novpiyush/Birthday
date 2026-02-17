@@ -78,6 +78,7 @@ p{color:#bdbdbd;font-size:14px;margin-bottom:22px;line-height:1.4}
 
 .option:hover{background:#fff;color:#000}
 
+/* Sparkles */
 .sparkle{
   position:fixed;
   width:4px;
@@ -158,21 +159,21 @@ noBtn.onclick = () => {
 
 yesBtn.onclick = () => {
   clickSound.currentTime = 0;
-  clickSound.play();
+  clickSound.play().catch(()=>{});
   start.classList.add("hidden");
   intro.classList.remove("hidden");
 };
 
 okBtn.onclick = () => {
   okSound.currentTime = 0;
-  okSound.play();
+  okSound.play().catch(()=>{});
   intro.classList.add("hidden");
   rules.classList.remove("hidden");
 };
 
-/* GAME LOGIC — UNCHANGED */
+/* GAME */
 let index=0, score=0;
-const questions=[ /* same as before */ 
+const questions=[
  {q:"How did we meet for the first time?",o:["You shared a post on Instagram","Through a friend","Random chat","Comment section"],a:"You shared a post on Instagram"},
  {q:"What nickname did I give you?",o:["Palku","Priya","Pihu","Pratibha"],a:"Palku"},
  {q:"When is my birthday?",o:["15 Nov","16 Nov","17 Nov","18 Nov"],a:"17 Nov"},
@@ -211,12 +212,27 @@ function endGame(){
   if(score>=7){
     result.innerHTML=`<h1>YOU WON THE GAME</h1>
     <p>You won by scoring ${score} out of ${questions.length}</p>
+    <p>You have won the game.<br>Now you can give me any dare<br>and I will complete it.</p>
     <button class="option" onclick="location.reload()">RESTART GAME</button>`;
+    sparkles();
   }else{
     result.innerHTML=`<h1>GAME OVER</h1>
     <p>You scored ${score} out of ${questions.length}</p>
     <button class="option" onclick="location.reload()">RESTART GAME</button>`;
   }
+}
+
+function sparkles(){
+  let c=0;
+  let i=setInterval(()=>{
+    const s=document.createElement("div");
+    s.className="sparkle";
+    s.style.left=Math.random()*100+"vw";
+    s.style.bottom="0";
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),4000);
+    if(++c>150)clearInterval(i);
+  },70);
 }
 </script>
 
